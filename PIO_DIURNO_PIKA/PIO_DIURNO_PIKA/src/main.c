@@ -29,12 +29,32 @@
  * Support and FAQ: visit <a href="http://www.atmel.com/design-support/">Atmel Support</a>
  */
 #include <asf.h>
+#define PA19 (1<<19)
+#define PA20 (1<<20)
 
 int main (void)
 {
 	/* Insert system clock initialization code here (sysclk_init()). */
-
+	sysclk_init();
 	board_init();
 
 	/* Insert application code here, after the board has been initialized. */
+
+
+
+
+	PIOA->PIO_PER |= (PA19 | PA20); //chama o registrador certo e escreve o bit 1 deslocando o 1 19 posições para o ponto certo do bus
+	//pode ser feito PIOA->PIO_PER = (1<<19); | (1<<20) realizando uma operação ou resultando em 001100000000000
+	PIOA->PIO_OER |= (PA19) | (PA20);
+
+
+
+
+	while (1){
+		PIOA->PIO_CODR |= PA20;
+		PIOA->PIO_SODR |= PA19;
+		PIOA->PIO_CODR |= PA19;
+		PIOA->PIO_SODR |= PA20;
+
+	}
 }
