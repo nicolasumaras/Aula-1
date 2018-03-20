@@ -32,6 +32,7 @@
 #define PA19 (1<<19)
 #define PA20 (1<<20)
 #define PC20 (1<<20)
+#define PB3 (1<<14)
 
 int main (void)
 {
@@ -50,11 +51,13 @@ int main (void)
 		PIOC->PIO_OER |= (PC20);
 		PIOA->PIO_SODR |= PA20; //acende o LED 20
 		PIOA->PIO_SODR |= PA19; //apaga o LED 19
-		PIOC->PIO_CODR |= PC20;
+		PIOC->PIO_CODR |= PC20; //é um mosfet, inverte o comando
 
+		PIOB->PIO_PER |= (PB3);
+		PIOB->PIO_ODR |= (PB3);
 
-
-	while (1){
+	/*while(1){
+	 
 		PIOA->PIO_CODR |= PA20; //acende o LED 20
 		PIOA->PIO_SODR |= PA19; //apaga o LED 19
 		PIOC->PIO_CODR |= PC20;
@@ -68,5 +71,32 @@ int main (void)
 		PIOC->PIO_SODR |= PC20;
 		
 		delay_s(1);
+	} */
+
+	while (1)
+	{
+
+	if (((PIOB->PIO_PDSR & PB3) == PB3 ))
+	{
+		PIOA->PIO_CODR |= PA20; //acende o LED 20
+		PIOA->PIO_SODR |= PA19; //apaga o LED 19
+		PIOC->PIO_CODR |= PC20;
+		delay_ms(100);
+		PIOC->PIO_CODR |= PC20;
+		PIOA->PIO_CODR |= PA19;
+		PIOA->PIO_SODR |= PA20; //Apaga o LED 20
+		delay_ms(100);
+		PIOA->PIO_SODR |= PA20; //acende o LED 20
+		PIOA->PIO_SODR |= PA19; //apaga o LED 19
+		PIOC->PIO_SODR |= PC20;
+		} else {
+		PIOA->PIO_SODR |= PA20;
+		PIOA->PIO_SODR |= PA19;
+		PIOC->PIO_SODR |= PC20;
+
 	}
+	}
+	
+	
+
 }
